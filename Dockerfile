@@ -8,16 +8,14 @@ MAINTAINER Yefry Figueroa
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Set the locale
+RUN apt-get clean && apt-get update && apt-get -y dist-upgrade && apt-get install -y locales
 RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8 
-ENV LANGUAGE en_US:en 
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 #Set PHP-FPM Version
 ENV phpv 7.0
-
-RUN apt-get update && \
-    apt-get -y dist-upgrade
 
 # Install NGINX, PHP $phpv, and supplimentary programs. 
 RUN apt-get -y install python-software-properties && \
