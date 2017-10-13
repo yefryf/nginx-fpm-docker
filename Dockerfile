@@ -63,7 +63,7 @@ COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY configs/authorized_keys /root/.ssh/authorized_keys
 
 # Update the default site with the config we created.
-ADD configs/neen.php /var/www/htdocs/neen.php
+ADD configs/index.php /var/www/htdocs/index.php
 
 COPY configs/nginx.conf /etc/nginx/nginx.conf
 COPY configs/nginx-vhost.conf /etc/nginx/sites-available/default
