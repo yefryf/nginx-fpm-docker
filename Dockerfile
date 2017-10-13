@@ -14,7 +14,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 #Set PHP-FPM Version
-ENV phpv 7.0
+ENV phpv 7.1
 
 RUN apt-get update && \
     apt-get -y dist-upgrade
