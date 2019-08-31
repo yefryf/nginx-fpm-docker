@@ -1,8 +1,8 @@
 # Set the base image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # File Author / Maintainer
-MAINTAINER Yefry Figueroa
+LABEL maintainer="Yefry Figueroa | www.figueroa.it" 
 
 # Set to no tty
 ARG DEBIAN_FRONTEND=noninteractive
