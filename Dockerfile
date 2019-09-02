@@ -21,13 +21,12 @@ RUN apt-get update && \
     apt-get -y dist-upgrade
 
 # Install NGINX, PHP $phpv, and supplimentary programs. 
-RUN apt-get -y install python-software-properties && \
-    apt-get -y install software-properties-common && \
+RUN apt-get -y install software-properties-common && \
     add-apt-repository ppa:ondrej/php && \
     nginx=stable && \
     add-apt-repository ppa:nginx/$nginx && \
     apt-get update && \
-    BUILD_PACKAGES="nginx supervisor openssh-server mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-mcrypt php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget rsync zip unzip git composer" && \
+    BUILD_PACKAGES="nginx supervisor openssh-server mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget rsync zip unzip git composer" && \
     apt-get -y install $BUILD_PACKAGES && \
     apt-get remove --purge -y software-properties-common && \
     apt-get autoremove -y && apt-get clean && apt-get autoclean
