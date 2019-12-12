@@ -24,7 +24,7 @@ RUN apt-get update && \
     add-apt-repository ppa:ondrej/php && \
     add-apt-repository ppa:nginx/stable && \
     apt-get update && \
-    BUILD_PACKAGES="nginx supervisor openssh-server mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget rsync zip unzip git composer" && \
+    BUILD_PACKAGES="nginx supervisor mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget rsync zip unzip git composer" && \
     apt-get -y install $BUILD_PACKAGES --no-install-recommends && \
     apt-get purge -y software-properties-common && \
     apt-get autoremove -y && apt-get clean && apt-get autoclean -y
@@ -40,8 +40,8 @@ RUN apt-get -y install inetutils-ping inetutils-telnet net-tools --no-install-re
 RUN sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php/$phpv/fpm/php.ini && \
     sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/$phpv/fpm/php.ini && \
     sed -i "s/max_execution_time = 30/max_execution_time = 120/" /etc/php/$phpv/fpm/php.ini && \
-    sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 20M/" /etc/php/$phpv/fpm/php.ini && \
-    sed -i "s/post_max_size = 8M/post_max_size = 20M/" /etc/php/$phpv/fpm/php.ini && \
+    sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 300M/" /etc/php/$phpv/fpm/php.ini && \
+    sed -i "s/post_max_size = 8M/post_max_size = 300M/" /etc/php/$phpv/fpm/php.ini && \
     sed -i "s/max_input_time = 60/max_input_time = -1/" /etc/php/$phpv/fpm/php.ini && \
     sed -i "s/; max_input_vars = 1000/max_input_vars = 20000/" /etc/php/$phpv/fpm/php.ini && \
     sed -i "s/;date.timezone =/date.timezone = 'Europe\/Rome'/" /etc/php/$phpv/fpm/php.ini && \
@@ -81,6 +81,6 @@ VOLUME /var/www/htdocs
 
 WORKDIR /var/www/htdocs
 
-EXPOSE 22 80
+EXPOSE 80
 
 CMD ["/usr/bin/supervisord"]
