@@ -30,7 +30,7 @@ RUN apt-get update && \
     apt-get autoremove -y && apt-get clean && apt-get autoclean -y
 
 # Needed dirs per fare funzionare l'avvio dei servizi da supervisord
-RUN mkdir /var/run/sshd /var/run/supervisor /var/run/php /var/run/nginx /root/.ssh && \
+RUN mkdir /var/run/sshd /var/run/supervisor /var/run/nginx /root/.ssh && \
     rm -rf /var/www/html
 
 # Install supplimentary programs
