@@ -24,7 +24,7 @@ RUN apt-get update && \
     add-apt-repository ppa:ondrej/php && \
     add-apt-repository ppa:nginx/stable && \
     apt-get update && \
-    BUILD_PACKAGES="nginx supervisor openssh-server mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget rsync zip unzip git composer" && \
+    BUILD_PACKAGES="nginx supervisor mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget git composer" && \
     apt-get -y install $BUILD_PACKAGES --no-install-recommends && \
     apt-get purge -y software-properties-common && \
     apt-get autoremove -y && apt-get clean && apt-get autoclean -y
@@ -55,12 +55,11 @@ RUN echo "opcache.memory_consumption=128M" >> /etc/php/$phpv/fpm/conf.d/10-opcac
 COPY configs/opcache-blacklist.txt /etc/php/$phpv/fpm/opcache-blacklist.txt
 
 COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY configs/authorized_keys /root/.ssh/authorized_keys
 
 # Update the default site with the config we created.
 COPY configs/index.php /var/www/htdocs/index.php
 
-COPY configs/nginx.conf /etc/nginx/nginx.conf
+#COPY configs/nginx.conf /etc/nginx/nginx.conf
 COPY configs/nginx-vhost.conf /etc/nginx/sites-available/default
 RUN ls -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
@@ -81,6 +80,6 @@ VOLUME /var/www/htdocs
 
 WORKDIR /var/www/htdocs
 
-EXPOSE 22 80
+EXPOSE 80
 
 CMD ["/usr/bin/supervisord"]
