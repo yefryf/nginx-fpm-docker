@@ -1,45 +1,40 @@
 # Set the base image
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # File Author / Maintainer
-MAINTAINER Yefry Figueroa
+LABEL maintainer="Yefry Figueroa | www.figueroa.it" 
 
 # Set to no tty
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Set the locale
-RUN apt-get clean && apt-get update && apt-get -y dist-upgrade && apt-get install -y locales
+RUN apt-get clean && apt-get update && \
+    apt-get install -y locales=2.27-3ubuntu1 --no-install-recommends && rm -rf /var/lib/apt/lists/*
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 #Set PHP-FPM Version
-ENV phpv 7.0
-
-RUN apt-get update && \
-    apt-get -y dist-upgrade
+ENV phpv 7.3
 
 # Install NGINX, PHP $phpv, and supplimentary programs. 
-RUN apt-get -y install python-software-properties && \
-    apt-get -y install software-properties-common && \
+RUN apt-get update && \
+    apt-get -y install software-properties-common --no-install-recommends && \
     add-apt-repository ppa:ondrej/php && \
-    nginx=stable && \
-    add-apt-repository ppa:nginx/$nginx && \
+    add-apt-repository ppa:nginx/stable && \
     apt-get update && \
-    BUILD_PACKAGES="nginx supervisor openssh-server mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-mcrypt php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget rsync zip unzip git composer" && \
-    apt-get -y install $BUILD_PACKAGES && \
-    apt-get remove --purge -y software-properties-common && \
-    apt-get autoremove -y && apt-get clean && apt-get autoclean
+    BUILD_PACKAGES="nginx supervisor mariadb-client php$phpv-fpm php$phpv-cli php$phpv-common php$phpv-mysql php$phpv-curl php$phpv-gd php$phpv-intl php$phpv-sqlite3 php$phpv-xmlrpc php$phpv-xsl php$phpv-mbstring php$phpv-bcmath php$phpv-xml php$phpv-soap php$phpv-zip curl vim wget git composer" && \
+    apt-get -y install $BUILD_PACKAGES --no-install-recommends && \
+    apt-get purge -y software-properties-common && \
+    apt-get autoremove -y && apt-get clean && apt-get autoclean -y
 
 # Needed dirs per fare funzionare l'avvio dei servizi da supervisord
-RUN mkdir /var/run/sshd /var/run/supervisor /var/run/php /var/run/nginx /root/.ssh && \
+RUN mkdir /var/run/sshd /var/run/supervisor /var/run/nginx /root/.ssh && \
     rm -rf /var/www/html
 
 # Install supplimentary programs
-RUN apt-get -y install inetutils-ping && \
-    apt-get -y install inetutils-telnet && \
-    apt-get -y install net-tools
+RUN apt-get -y install inetutils-ping inetutils-telnet net-tools --no-install-recommends 
 
 # Update the PHP.ini file
 RUN sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php/$phpv/fpm/php.ini && \
@@ -60,12 +55,11 @@ RUN echo "opcache.memory_consumption=128M" >> /etc/php/$phpv/fpm/conf.d/10-opcac
 COPY configs/opcache-blacklist.txt /etc/php/$phpv/fpm/opcache-blacklist.txt
 
 COPY configs/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY configs/authorized_keys /root/.ssh/authorized_keys
 
 # Update the default site with the config we created.
-ADD configs/index.php /var/www/htdocs/index.php
+COPY configs/index.php /var/www/htdocs/index.php
 
-COPY configs/nginx.conf /etc/nginx/nginx.conf
+#COPY configs/nginx.conf /etc/nginx/nginx.conf
 COPY configs/nginx-vhost.conf /etc/nginx/sites-available/default
 RUN ls -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
@@ -86,6 +80,6 @@ VOLUME /var/www/htdocs
 
 WORKDIR /var/www/htdocs
 
-EXPOSE 22 80
+EXPOSE 80
 
 CMD ["/usr/bin/supervisord"]
